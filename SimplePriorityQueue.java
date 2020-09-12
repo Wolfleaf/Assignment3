@@ -4,17 +4,17 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
 
-public class SimplePriorityQueue<Type> implements PriorityQueue<Type> {
+public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparable<Type> {
 
-	private static Object[] array;
+	private Type[] data; //array where the data is stored
 	
-	private static int actualLength;
+	private int actualLength; //length of the actual array
 	
-	private static int dynamicLength;
-	
-	
+	private int dynamicLength; //length of the parts of the array we are actually using
 	
 	
+	
+	@SuppressWarnings("unchecked")
 	public SimplePriorityQueue() {
 //		make array
 //		finding min and removing min should run fastest
@@ -22,40 +22,78 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type> {
 //		begin as empty array
 //		natural ordering
 		
-//		@SuppressWarnings("unchecked")
-		Type[] SParray = (Type[]) new Object[16];
-		this.array = SParray;
+		this.data = (Type[]) new Object[16];
 		this.actualLength = 16;
 		this.dynamicLength = 0;
 	}
 
 	//name to comparator parameter added
+	@SuppressWarnings("unchecked")
 	public SimplePriorityQueue(Comparator<? super Type> Comp) {
-		@SuppressWarnings("unchecked")
-		Type[] SParray = (Type[]) new Object[16];
-		this.array = SParray;
+
+		this.data = (Type[]) new Object[16];
 		this.actualLength = 16;
 		this.dynamicLength = 0;
 	}
 
 	@Override
 	public Type findMin() throws NoSuchElementException {
-		// TODO Auto-generated method stub 
 
-		return (Type) this.array[dynamicLength];
+		return this.data[dynamicLength-1];
 	}
 
 	@Override
 	public Type deleteMin() throws NoSuchElementException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		Type deletedMin = this.findMin();
+		this.data[dynamicLength-1] = null;
+		this.dynamicLength -= 1;
+		return deletedMin;
 	}
 
-	@Override
+	@SuppressWarnings("unchecked")
 	public void insert(Type item) {
-		// TODO Auto-generated method stub
-		//binary search - sorted list - check to double array size
-
+		//Check if enough space, if not double it
+		//Search for correct location to insert
+		//Move other objects to different locations
+		//Add item
+		
+		if (this.actualLength == this.dynamicLength) {
+			Type[] newData = (Type[]) new Object[actualLength * 2];
+			for (int i = 0; i < actualLength; i++) {
+				newData[i] = this.data[i];
+			}
+			this.actualLength *=2;
+		}
+		
+		int min = 0;
+		int max = dynamicLength;
+		int mid;
+		boolean itemFound = false;
+		while (!itemFound) {
+			if( max < min)
+			{
+				mid = max;
+				break;
+			}
+			mid = (max - min / 2) + min;
+			if ((Comparable<? super Type>)this.data[mid]).compareTo(item) {
+				max = mid + 1;
+			}
+			if(this.data[mid].compareTo(item) < 0) {
+				min = mid + 1;
+			}
+			else {
+				itemFound = true;
+			}
+		}
+		
+		for (int i = dynamicLength; i > mid; i--)
+		{
+			this.data[dynamicLength] = this.data[dynamicLength - 1];
+		}
+		this.data[mid] = item;
+		this.dynamicLength++;
 	}
 
 	@Override
@@ -80,5 +118,11 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type> {
 	public void clear() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public int compareTo(Type item) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
