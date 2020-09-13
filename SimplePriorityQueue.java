@@ -48,10 +48,13 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparabl
 	 * Returns the smallest variable in the priority queue
 	 */
 	@Override
-	public Type findMin() throws NoSuchElementException {
-
-		return this.data[dynamicLength - 1];
-	}
+    public Type findMin() throws NoSuchElementException {
+        if (dynamicLength == 0) {
+            throw new NoSuchElementException();
+        } else {
+            return this.data[dynamicLength - 1];
+        }
+    }
 
 	/**
 	 * Deletes the smallest variable in the priority queue
@@ -142,6 +145,7 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparabl
 	public boolean isEmpty() {
 		if (this.data[0] == null)
 		{
+			dynamicLength = 0;
 			return true;
 		}
 		return false;

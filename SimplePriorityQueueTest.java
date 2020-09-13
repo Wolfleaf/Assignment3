@@ -3,6 +3,7 @@ package assign03;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,6 +56,18 @@ class SimplePriorityQueueTest {
 	void testFindMinStringArray() {
 		assertEquals("A", queueString.findMin());
 		assertEquals("A", queueString2.findMin());
+	}
+	
+	@Test
+	void testFindMinIntArrayNone() {
+		SimplePriorityQueue<Integer> queueEmpty = new SimplePriorityQueue<Integer>();
+		assertThrows(NoSuchElementException.class, () -> {queueEmpty.findMin();});
+	}
+	
+	@Test
+	void testFindMinStringArrayNone() {
+		SimplePriorityQueue<String> queueEmpty = new SimplePriorityQueue<String>();
+		assertThrows(NoSuchElementException.class, () -> {queueEmpty.findMin();});
 	}
 	
 	@Test
@@ -284,5 +297,5 @@ class SimplePriorityQueueTest {
 		
 		assertEquals("{2, 1}", testQueue.toString());
 	}
-
+	
 }
