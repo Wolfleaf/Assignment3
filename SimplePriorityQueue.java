@@ -129,4 +129,17 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparabl
 
 		return this.compareTo(item);
 	}
+	
+	/**
+	 * Returns the data of the SimplePriorityQueue in an easy to read format
+	 * Example: {5, 4, 3, 2, 1}
+	 */
+	public String toString() {
+		String stringQueue = "{";
+		for (int i = 0; i < dynamicLength - 1; i++) {
+			stringQueue += data[i] + ", ";
+		}
+		stringQueue += data[dynamicLength-1] + "}";
+		return stringQueue;
+	}
 }
