@@ -51,53 +51,39 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparabl
 
 	@SuppressWarnings("unchecked")
 	public void insert(Type item) {
-		// Check if enough space, if not double it
-		// Search for correct location to insert
-		// Move other objects to different locations
-		// Add item
-		if (this.actualLength == this.dynamicLength) {
-			Type[] newData = (Type[]) new Object[actualLength * 2];
-			for (int i = 0; i < actualLength; i++) {
-				newData[i] = this.data[i];
-			}
-			this.actualLength *= 2;
-		}
-
+		
 		int min = 0;
 		int max = dynamicLength;
 		int mid = 0;
-		int count = 0;
 		boolean itemFound = false;
-
-		//maybe unneeded
-		if (((Comparable<Type>) this.data[mid]) == null) {
-			this.data[0] = item;
-			return;
-		}
-
+		
 		this.dynamicLength++;
-		while (!itemFound && (count != (dynamicLength - 1))) {
-			if (max < min || mid == max) {
-				mid = max;
-				break;
-			}
-			mid = ((max - min) / 2) + min;
-			if (((Comparable<Type>) this.data[mid]).compareTo(item) > 0) {
-				min = mid + 1;
-			} else if (((Comparable<Type>) this.data[mid]).compareTo(item) < 0) {
-				max = mid + 1;
-			} else {
+		
+		while (!itemFound) {
+			mid = (((max - min) / 2) + min);
+
+			if (this.data[mid] == item || max <= min) { //If item equals data
 				itemFound = true;
 			}
-			count++;
+			else if (((Comparable<Type>) item).compareTo(this.data[mid]) < 0) { //If item is smaller than data
+				min = mid + 1;
+			}
+			else if (((Comparable<Type>) item).compareTo(this.data[mid]) > 0) { //If item is larger than data
+				max = mid;
+			}
 		}
 		
 		Type[] newData = (Type[]) new Object[actualLength];
-		for (int i = mid; i < dynamicLength; i++) {
-			newData[i + 1] = this.data[i];
-		}
+
+        for (int indexFirst = 0; indexFirst < mid; indexFirst++) {
+            newData[indexFirst] = this.data[indexFirst];
+        }
+        newData[mid] = item;
+        for (int indexSecond = mid; indexSecond < dynamicLength - 1; indexSecond++) {
+            newData[indexSecond + 1] = this.data[indexSecond];
+        }
+        
 		this.data = newData;
-		this.data[mid] = item;
 	}
 
 	@Override
@@ -139,7 +125,7 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparabl
 		for (int i = 0; i < dynamicLength - 1; i++) {
 			stringQueue += data[i] + ", ";
 		}
-		stringQueue += data[dynamicLength-1] + "}";
+		stringQueue += data[dynamicLength -1] + "}";
 		return stringQueue;
 	}
 }
