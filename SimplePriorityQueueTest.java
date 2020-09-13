@@ -127,6 +127,60 @@ class SimplePriorityQueueTest {
 	}
 	
 	@Test
+	void testChangeSizeInteger() {
+		assertEquals(5, queueInt.size());
+		
+		ArrayList<Integer> inserted = new ArrayList<Integer>();
+		inserted.add(1);
+		inserted.add(2);
+		inserted.add(3);
+		inserted.add(4);
+		inserted.add(5);
+		inserted.add(6);
+		inserted.add(7);
+		inserted.add(8);
+		inserted.add(9);
+		inserted.add(10);
+		inserted.add(11);
+		inserted.add(12);
+		inserted.add(13);
+		inserted.add(14);
+		inserted.add(15);
+		inserted.add(16);
+		queueInt.insertAll(inserted);
+
+		assertEquals(21, queueInt.size());
+		assertEquals("{16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1}", queueInt.toString());
+	}
+	
+	@Test
+	void testChangeSizeString() {
+		assertEquals(5, queueString.size());
+		
+		ArrayList<String> inserted = new ArrayList<String>();
+		inserted.add("A");
+		inserted.add("B");
+		inserted.add("C");
+		inserted.add("D");
+		inserted.add("E");
+		inserted.add("F");
+		inserted.add("G");
+		inserted.add("H");
+		inserted.add("I");
+		inserted.add("J");
+		inserted.add("K");
+		inserted.add("L");
+		inserted.add("M");
+		inserted.add("N");
+		inserted.add("O");
+		inserted.add("P");
+		queueString.insertAll(inserted);
+
+		assertEquals(21, queueString.size());
+		assertEquals("{P, O, N, M, L, K, J, I, H, G, F, E, E, D, D, C, C, B, B, A, A}", queueString.toString());
+	}
+	
+	@Test
 	void testIntegerSize() {
 		assertEquals(5, queueInt.size());
 		assertEquals(5, queueInt2.size());

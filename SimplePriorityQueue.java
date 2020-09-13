@@ -31,7 +31,6 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparabl
 		this.dynamicLength = 0;
 	}
 
-
 	/**
 	 * Constructor for SimplePriorityQueue that utilizes Comparator
 	 * Starts with an array of size 16
@@ -98,7 +97,12 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparabl
 		
 		Type[] newData = (Type[]) new Object[actualLength];
 
-        for (int indexFirst = 0; indexFirst < mid; indexFirst++) {
+        if (actualLength == dynamicLength) {
+        	newData = (Type[]) new Object[actualLength * 2];
+        	actualLength *=2;
+        }
+		
+		for (int indexFirst = 0; indexFirst < mid; indexFirst++) {
             newData[indexFirst] = this.data[indexFirst];
         }
         newData[mid] = item;
