@@ -5,12 +5,12 @@ import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 /**
- * A Generic List of items that are sorted using Comparable from largest to smallest
+ * A Generic List of items that are sorted using Comparable from largest to
+ * smallest
  * 
- * @author Alex Thomsen and Guyan Cool
- * Current Version: 9/13/2020
+ * @author Alex Thomsen and Guyan Cool Current Version: 9/13/2020
  *
- * @param <Type>	Any object that implements Comparable and can be sorted
+ * @param <Type> Any object that implements Comparable and can be sorted
  */
 public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparable<Type> {
 
@@ -20,9 +20,10 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparabl
 
 	private int dynamicLength; // length of the parts of the array we are actually using
 
+	private Comparator<? super Type> cmp;
+
 	/**
-	 * Constructor for SimplePriorityQueue
-	 * Starts with an array of size 16
+	 * Constructor for SimplePriorityQueue Starts with an array of size 16
 	 */
 	@SuppressWarnings("unchecked")
 	public SimplePriorityQueue() {
@@ -32,29 +33,30 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparabl
 	}
 
 	/**
-	 * Constructor for SimplePriorityQueue that utilizes Comparator
-	 * Starts with an array of size 16
+	 * Constructor for SimplePriorityQueue that utilizes Comparator Starts with an
+	 * array of size 16
 	 * 
 	 * @param Comp type that can be used in Comparator
 	 */
 	@SuppressWarnings("unchecked")
-	public SimplePriorityQueue(Comparator<? super Type> Comp) {
+	public SimplePriorityQueue(Comparator<? super Type> cmp) {
 		this.data = (Type[]) new Object[16];
 		this.actualLength = 16;
 		this.dynamicLength = 0;
+		this.cmp = cmp;
 	}
 
 	/**
 	 * Returns the smallest variable in the priority queue
 	 */
 	@Override
-    public Type findMin() throws NoSuchElementException {
-        if (dynamicLength == 0) {
-            throw new NoSuchElementException();
-        } else {
-            return this.data[dynamicLength - 1];
-        }
-    }
+	public Type findMin() throws NoSuchElementException {
+		if (dynamicLength == 0) {
+			throw new NoSuchElementException();
+		} else {
+			return this.data[dynamicLength - 1];
+		}
+	}
 
 	/**
 	 * Deletes the smallest variable in the priority queue
@@ -69,50 +71,64 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparabl
 	}
 
 	/**
-	 * Inserts an item of the Priority Queue type into the priority queue
-	 * This class automatically sorts the queue and places the item in the correct location
+	 * Inserts an item of the Priority Queue type into the priority queue This class
+	 * automatically sorts the queue and places the item in the correct location
 	 * 
-	 * @param item 	Item being inserted into the priority queue
+	 * @param item Item being inserted into the priority queue
 	 */
 	@SuppressWarnings("unchecked")
 	public void insert(Type item) {
-		
+
 		int min = 0;
 		int max = dynamicLength;
 		int mid = 0;
 		boolean itemFound = false;
-		
-		this.dynamicLength++;
-		
-		while (!itemFound) {
-			mid = (((max - min) / 2) + min);
 
-			if (this.data[mid] == item || max <= min) { //If item equals data
-				itemFound = true;
+		this.dynamicLength++;
+
+		if (this.cmp != null) {
+
+			while (!itemFound) {
+				mid = (((max - min) / 2) + min);
+
+				if (this.data[mid] == item || max <= min) { // If item equals data
+					itemFound = true;
+				} else if (cmp.compare(item, this.data[mid]) < 0) { // If item is smaller than data
+					min = mid + 1;
+				} else if (cmp.compare(item, this.data[mid]) > 0) { // If item is larger than data
+					max = mid;
+				}
 			}
-			else if (((Comparable<Type>) item).compareTo(this.data[mid]) < 0) { //If item is smaller than data
-				min = mid + 1;
-			}
-			else if (((Comparable<Type>) item).compareTo(this.data[mid]) > 0) { //If item is larger than data
-				max = mid;
+		} else {
+
+			while (!itemFound) {
+				mid = (((max - min) / 2) + min);
+
+				if (this.data[mid] == item || max <= min) { // If item equals data
+					itemFound = true;
+				} else if (((Comparable<Type>) item).compareTo(this.data[mid]) < 0) { // If item is smaller than data
+					min = mid + 1;
+				} else if (((Comparable<Type>) item).compareTo(this.data[mid]) > 0) { // If item is larger than data
+					max = mid;
+				}
 			}
 		}
-		
+
 		Type[] newData = (Type[]) new Object[actualLength];
 
-        if (actualLength == dynamicLength) {
-        	newData = (Type[]) new Object[actualLength * 2];
-        	actualLength *=2;
-        }
-		
+		if (actualLength == dynamicLength) {
+			newData = (Type[]) new Object[actualLength * 2];
+			actualLength *= 2;
+		}
+
 		for (int indexFirst = 0; indexFirst < mid; indexFirst++) {
-            newData[indexFirst] = this.data[indexFirst];
-        }
-        newData[mid] = item;
-        for (int indexSecond = mid; indexSecond < dynamicLength - 1; indexSecond++) {
-            newData[indexSecond + 1] = this.data[indexSecond];
-        }
-        
+			newData[indexFirst] = this.data[indexFirst];
+		}
+		newData[mid] = item;
+		for (int indexSecond = mid; indexSecond < dynamicLength - 1; indexSecond++) {
+			newData[indexSecond + 1] = this.data[indexSecond];
+		}
+
 		this.data = newData;
 	}
 
@@ -120,7 +136,7 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparabl
 	 * Inserts multiple items stored in a collection type into the priority queue
 	 * Automatically sorts the items into their correct location
 	 * 
-	 * @param coll	Collection of items to be inserted
+	 * @param coll Collection of items to be inserted
 	 */
 	@Override
 	public void insertAll(Collection<? extends Type> coll) {
@@ -139,12 +155,12 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparabl
 	}
 
 	/**
-	 * Boolean expression that returns true if there are no items in the priority queue
+	 * Boolean expression that returns true if there are no items in the priority
+	 * queue
 	 */
 	@Override
 	public boolean isEmpty() {
-		if (this.data[0] == null)
-		{
+		if (this.data[0] == null) {
 			dynamicLength = 0;
 			return true;
 		}
@@ -156,20 +172,24 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparabl
 	 */
 	@Override
 	public void clear() {
-		for (Type var : data) {
-			var = null;
-		}
+
+		this.data = (Type[]) new Object[16];
 		dynamicLength = 0;
+
 	}
+
+//	public int compare(Type item1, Type item2) {
+//		return 0;
+//	}
 
 	/**
 	 * Compares two items for sorting in the priority queue
 	 */
-	@Override
+
 	public int compareTo(Type item) {
 		return this.compareTo(item);
 	}
-	
+
 	/**
 	 * Returns the data of the SimplePriorityQueue in an easy to read format
 	 * Example: {5, 4, 3, 2, 1}
@@ -178,9 +198,9 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparabl
 		String stringQueue = "{";
 		for (int i = 0; i < dynamicLength; i++) {
 			stringQueue += data[i];
-			if (i != dynamicLength - 1){
+			if (i != dynamicLength - 1) {
 				stringQueue += ", ";
-			} 
+			}
 		}
 		stringQueue += "}";
 		return stringQueue;
