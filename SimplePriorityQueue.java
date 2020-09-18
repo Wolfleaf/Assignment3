@@ -65,7 +65,6 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparabl
 	public Type deleteMin() throws NoSuchElementException {
 
 		Type deletedMin = this.findMin();
-		this.data[dynamicLength - 1] = null;
 		this.dynamicLength -= 1;
 		return deletedMin;
 	}
@@ -86,6 +85,8 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparabl
 
 		this.dynamicLength++;
 
+		//binary search - testing for comparator is integrated with the if statement "if (this.cmp != null)"
+		
 		if (this.cmp != null) {
 
 			while (!itemFound) {
@@ -104,7 +105,7 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparabl
 			while (!itemFound) {
 				mid = (((max - min) / 2) + min);
 
-				if (this.data[mid] == item || max <= min) { // If item equals data
+				if (this.data[mid] == item || max <= min || ((Comparable<Type>) item).compareTo(this.data[mid]) == 0) { // If item equals data
 					itemFound = true;
 				} else if (((Comparable<Type>) item).compareTo(this.data[mid]) < 0) { // If item is smaller than data
 					min = mid + 1;
@@ -160,8 +161,7 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparabl
 	 */
 	@Override
 	public boolean isEmpty() {
-		if (this.data[0] == null) {
-			dynamicLength = 0;
+		if (dynamicLength == 0) {
 			return true;
 		}
 		return false;
@@ -170,6 +170,7 @@ public class SimplePriorityQueue<Type> implements PriorityQueue<Type>, Comparabl
 	/**
 	 * Removes all items from the priority queue
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void clear() {
 
