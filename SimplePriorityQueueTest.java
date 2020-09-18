@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 class SimplePriorityQueueTest {
 
 	private SimplePriorityQueue<Integer> queueInt; // SimplePriorityQueue with concurrent Integers
+	private SimplePriorityQueue<Integer> queueIntComparator; // SimplePriorityQueue with concurrent Integers and a Comparator
 	private SimplePriorityQueue<Integer> queueIntNegative; // SimplePriorityQueue with negative and positive Integers
 	private SimplePriorityQueue<String> queueStringConcurrent; // SimplePriorityQueue with concurrent one letter Strings
 	private SimplePriorityQueue<String> queueStringRandom; // SimplePriorityQueue with random one letter Strings
@@ -30,6 +31,14 @@ class SimplePriorityQueueTest {
 		queueInt.insert(3);
 		queueInt.insert(4);
 		queueInt.insert(5);
+
+		// Five element SimplePriorityQueue of Integers 1, 2, 3, 4, and 5
+		queueIntComparator = new SimplePriorityQueue<Integer>((i1, i2) -> i2 - i1);
+		queueIntComparator.insert(1);
+		queueIntComparator.insert(2);
+		queueIntComparator.insert(3);
+		queueIntComparator.insert(4);
+		queueIntComparator.insert(5);
 
 		// Five element SimplePriorityQueue of Integers -40, -20, 0, 20, and 40
 		queueIntNegative = new SimplePriorityQueue<Integer>();
@@ -91,13 +100,18 @@ class SimplePriorityQueueTest {
 	}
 
 	@Test
-
 	void testFindMinIntArray() {
 		assertEquals(1, queueInt.findMin());
 	}
+	
+	@Test
+	void testFindMinIntArrayComparator() {
+		assertEquals(5, queueIntComparator.findMin());
+	}
 
+	@Test
 	void testFindMinNegativeIntArray() {
-		assertEquals(1, queueInt.findMin());
+		assertEquals(-40, queueIntNegative.findMin());
 
 	}
 
@@ -156,6 +170,12 @@ class SimplePriorityQueueTest {
 		queueIntNegative.deleteMin();
 		assertEquals("{5, 4, 3}", queueInt.toString());
 		assertEquals("{40, 20, 0}", queueIntNegative.toString());
+	}
+	
+	@Test
+	void testDeleteMinIntArrayComparator() {
+		queueIntComparator.deleteMin();
+		assertEquals("{1, 2, 3, 4}", queueIntComparator.toString());
 	}
 
 	@Test
@@ -216,6 +236,14 @@ class SimplePriorityQueueTest {
 		queueInt.insert(1);
 		assertEquals("{100, 5, 4, 3, 2, 1, 1, -100}", queueInt.toString());
 	}
+	
+	@Test
+	void testIntegerComparatorInsert() {
+		queueIntComparator.insert(100);
+		queueIntComparator.insert(-100);
+		queueIntComparator.insert(1);
+		assertEquals("{-100, 1, 1, 2, 3, 4, 5, 100}", queueIntComparator.toString()); 
+	}
 
 	@Test
 	void testStringInsert() {
@@ -233,6 +261,15 @@ class SimplePriorityQueueTest {
 		queueCharacters.insert('Z');
 
 		assertEquals("{Z, E, D, C, C, B, A, A}", queueCharacters.toString());
+	}
+
+	@Test
+	void testCharacterInsertDelete() {
+		SimplePriorityQueue<Character> testQueue = new SimplePriorityQueue<Character>();
+
+		testQueue.insert('B');
+		testQueue.deleteMin();
+		assertTrue(testQueue.isEmpty());
 	}
 
 	@Test
@@ -300,6 +337,33 @@ class SimplePriorityQueueTest {
 		assertEquals(21, queueInt.size());
 		assertEquals("{16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1}", queueInt.toString());
 	}
+	
+	@Test
+	void testChangeSizeComparatorInteger() {
+		assertEquals(5, queueIntComparator.size());
+
+		ArrayList<Integer> inserted = new ArrayList<Integer>();
+		inserted.add(1);
+		inserted.add(2);
+		inserted.add(3);
+		inserted.add(4);
+		inserted.add(5);
+		inserted.add(6);
+		inserted.add(7);
+		inserted.add(8);
+		inserted.add(9);
+		inserted.add(10);
+		inserted.add(11);
+		inserted.add(12);
+		inserted.add(13);
+		inserted.add(14);
+		inserted.add(15);
+		inserted.add(16);
+		queueIntComparator.insertAll(inserted);
+
+		assertEquals(21, queueIntComparator.size());
+		assertEquals("{1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}", queueIntComparator.toString()); 
+	}
 
 	@Test
 	void testChangeSizeString() {
@@ -357,6 +421,7 @@ class SimplePriorityQueueTest {
 
 	@Test
 	void testIntegerSize() {
+		assertEquals(5, queueIntComparator.size());
 		assertEquals(5, queueInt.size());
 		assertEquals(5, queueIntNegative.size());
 	}
@@ -401,6 +466,12 @@ class SimplePriorityQueueTest {
 		queueInt.clear();
 		assertEquals(0, queueInt.size());
 		assertEquals("{}", queueInt.toString());
+		
+		assertEquals(5, queueIntComparator.size());
+		assertEquals("{1, 2, 3, 4, 5}", queueIntComparator.toString());
+		queueIntComparator.clear();
+		assertEquals(0, queueIntComparator.size());
+		assertEquals("{}", queueIntComparator.toString());
 
 		assertEquals(5, queueIntNegative.size());
 		assertEquals("{40, 20, 0, -20, -40}", queueIntNegative.toString());
@@ -418,12 +489,6 @@ class SimplePriorityQueueTest {
 		queueStringConcurrent.clear();
 		assertEquals(0, queueStringConcurrent.size());
 		assertEquals("{}", queueStringConcurrent.toString());
-
-		Character a = 'd';
-		System.out.println(a.compareTo(a));
-		Character a2 = 'b';
-		System.out.println(a.compareTo(a2));
-		System.out.println(a2.compareTo(a));
 
 		assertEquals(5, queueStringRandom.size());
 		assertEquals("{X, S, F, E, A}", queueStringRandom.toString());
@@ -457,10 +522,12 @@ class SimplePriorityQueueTest {
 	@Test
 	void testIntegerClear() {
 		queueInt.clear();
+		queueIntComparator.clear();
 		queueIntNegative.clear();
 		assertEquals("{}", queueInt.toString());
+		assertEquals("{}", queueIntComparator.toString());
 		assertEquals("{}", queueIntNegative.toString());
-		assertEquals(queueIntNegative.toString(), queueInt.toString());
+		assertEquals(queueIntNegative.toString(), queueInt.toString(), queueIntComparator.toString());
 	}
 
 	@Test
